@@ -14,6 +14,7 @@ let favorites = {}
 
 function showContent (page) {
   window.scrollTo({ top: 0, behavior: 'instant' })
+  loader.classList.add('hidden')
   if (page === 'results') {
     resultsNav.classList.remove('hidden')
     favoritesNav.classList.add('hidden')
@@ -21,10 +22,10 @@ function showContent (page) {
     resultsNav.classList.add('hidden')
     favoritesNav.classList.remove('hidden')
   }
-  loader.classList.add('hidden')
 }
 
 function createDOMNodes (page) {
+  // Load ResultsArray or Favorites
   const currentArray =
     page === 'results' ? resultsArray : Object.values(favorites)
   currentArray.forEach(result => {
@@ -54,10 +55,10 @@ function createDOMNodes (page) {
     saveText.classList.add('clickable')
     if (page === 'results') {
       saveText.textContent = 'Add To Favorites'
-      saveText.setAtrribute('onclick', `saveFavorite('${result.url}')`)
+      saveText.setAttribute('onclick', `saveFavorite('${result.url}')`)
     } else {
       saveText.textContent = 'Remove Favorite'
-      saveText.setAtrribute('onclick', `removeFavorite('${result.url}')`)
+      saveText.setAttribute('onclick', `removeFavorite('${result.url}')`)
     }
     // Card Text
     const cardText = document.createElement('p')
@@ -69,10 +70,10 @@ function createDOMNodes (page) {
     const date = document.createElement('strong')
     date.textContent = result.date
     // Copyright
-    const copyRightResult =
+    const copyrightResult =
       result.copyright === undefined ? '' : result.copyright
     const copyright = document.createElement('span')
-    copyright.textContent = ` ${copyRightResult}`
+    copyright.textContent = ` ${copyrightResult}`
     // Append
     footer.append(date, copyright)
     cardBody.append(cardTitle, saveText, cardText, footer)
@@ -99,6 +100,7 @@ async function getNasaPictures () {
   try {
     const response = await fetch(apiUrl)
     resultsArray = await response.json()
+    console.log(resultsArray)
     updateDOM('results')
   } catch (error) {
     // Catch Error Here
